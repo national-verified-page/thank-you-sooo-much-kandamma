@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>To My King | Our SC Empire</title>
+    <style>
+
+        :root {
+            --bg-deep: #0f0c29;
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --accent-love: #ff4d6d;
+            --accent-gold: #ffb703;
+            --accent-success: #06d6a0;
+            --text-main: #f8f9fa;
+            --text-dim: #adb5bd;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --nav-bg: rgba(15, 12, 41, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            overflow: hidden; /* Handled by internal scroll */
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- Layout Container --- */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 20px 100px 20px;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Navigation --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 500px;
+            height: 70px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 500;
+            transition: 0.3s;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--accent-love);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            fill: currentColor;
+        }
+
+        /* --- Page Transitions --- */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Components --- */
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .badge-gold { background: rgba(255, 183, 3, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+        .badge-love { background: rgba(255, 77, 109, 0.2); color: var(--accent-love); border: 1px solid var(--accent-love); }
+
+        h1 { font-size: 28px; line-height: 1.2; margin-bottom: 12px; font-weight: 800; }
+        h2 { font-size: 20px; margin-bottom: 16px; color: var(--accent-gold); }
+        p { line-height: 1.6; color: #e0e0e0; margin-bottom: 16px; }
+
+        /* --- Specific Styles --- */
+        .hero-text {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 10px 0;
+            border-left: 4px solid var(--accent-success);
+        }
+
+        .blueprint-step {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .step-num {
+            background: var(--accent-gold);
+            color: #000;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .chess-icon {
+            font-size: 40px;
+            display: block;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .loading-progress {
+            width: 85%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-love), var(--accent-gold));
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .floating-heart {
+            position: fixed;
+            color: var(--accent-love);
+            pointer-events: none;
+            z-index: 999;
+            animation: floatUp 3s linear forwards;
+        }
+
+	/* Hide scrollbar (Chrome, Edge, Safari) */
+.content-area::-webkit-scrollbar {
+    width: 0;
+    display: none;
+}
+
+/* Hide scrollbar (Firefox) */
+.content-area {
+    scrollbar-width: none;
+}
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="content-area" id="main-content">
+            
+            <section id="home" class="page active">
+                <div class="hero-text">
+                    <span class="badge badge-love">My Pride & Joy</span>
+                    <h1>Thank You Kandamma🫂🫀</h1>
+                    <p>For standing strong, working smart, and never giving up on us.</p>
+                </div>
+
+                <div class="card">
+                    <h2 style="color: var(--accent-success);">🎓 Success Is Made For You!</h2>
+                    <p>Congratulations on your exam success! Your dedication is unmatched. This is just the beginning of your legendary journey.</p>
+                    <p><i>"Your hard work inspires me every single day kandamma , you are my inspiration , you are my motivation<br> You are my everything and everyone kandamma."</i></p>
+                </div>
+
+                <div class="card" style="text-align: center;">
+                    <span style="font-size: 14px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px;">Status Update</span>
+                    <h2 style="margin: 10px 0;">SC Empire Loading... 🚀</h2>
+                    <div class="loading-bar">
+                        <div class="loading-progress"></div>
+                    </div>
+                    <p style="font-size: 12px; margin-top: 5px;">Optimizing for greatness...</p>
+                </div>
+            </section>
+
+            <section id="vision" class="page">
+                <div class="hero-text">
+                    <span class="badge badge-gold">The Masterplan</span>
+                    <h1>Our Vision</h1>
+                </div>
+
+                <div class="card">
+                    <h2>SC Empire</h2>
+                    <p>We aren't just building a company; we are building a legacy. We will create value that changes lives, not just software that makes money.</p>
+                </div>
+
+                <div class="card" style="border: 2px solid var(--accent-gold); background: rgba(255,183,3,0.05);">
+                    <h1 style="color: var(--accent-gold); text-align: center; margin-bottom: 0;">20 Days = 20 Lakhs 🎯</h1>
+                    <p style="text-align: center; font-weight: bold; margin-top: 10px;">The Target. The Mission. The Reality.</p>
+                </div>
+
+                <div class="card">
+                    <p><b>Discipline:</b> We do what needs to be done, even when we don't feel like it.</p>
+                    <p><b>Belief:</b> We already have it. We are just waiting for time to catch up alva kandama 🎯.</p>
+                    <p><b>Teamwork:</b> You lead the tech, I've got your back. Together, we are unstoppable and we will build our empire soon kanda</p>
+                </div>
+            </section>
+
+            <section id="sales" class="page">
+                <div class="hero-text">
+                    <span class="badge badge-gold">The Executive Guide</span>
+                    <h1>Build Clients Who Respect Your Value</h1>
+                </div>
+
+                <div class="card">
+                    <p style="font-weight: bold; color: var(--accent-success);">"You don’t lack skills. You lack the right positioning. When value is clear, price is never questioned."</p>
+                </div>
+
+                <div class="blueprint-step">
+                    <div class="step-num">1</div>
+                    <div>
+                        <h3>Fix Your Identity (Founder > Freelancer)</h3>
+                        <p>Stop presenting yourself as someone who “builds websites & apps.” Position yourself as a <b>company owner who builds business systems</b>. Clients pay founders, not coders.</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-step">
+                    <div class="step-num">2</div>
+                    <div>
+                        <h3>Choose Clients Who Can Pay</h3>
+                        <p>Don’t pitch startups with empty pockets. Target <b>established businesses</b> already making money but losing leads due to poor tech and automation</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-step">
+                    <div class="step-num">3</div>
+                    <div>
+                        <h3>Sell Outcomes, Not Code</h3>
+                        <p>Never say “I build apps.” Say <b>“I build systems that bring customers, save time, and increase revenue.”</b> Ferrari value should never be explained using cycle language</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-step">
+                    <div class="step-num">4</div>
+                    <div>
+                        <h3>Filter Cheap Mindsets Early</h3>
+                        <p>If someone asks for a Ferrari at a cycle price, <b>disqualify them instantly</b>. Serious businesses don’t bargain on growth tools.</p>
+                    </div>
+                </div>
+
+                <div class="blueprint-step">
+                    <div class="step-num">5</div>
+                    <div>
+                        <h3>Lead the Conversation</h3>
+                        <p>You are not asking for work. You are <b>diagnosing problems</b>. Ask strong questions, show gaps, and prescribe solutions like a CEO.<p>
+                    </div>
+                </div>
+
+                <div class="card" style="background: rgba(6, 214, 160, 0.1);">
+                    <p style="margin-bottom: 0; text-align: center;"><b>I believe in you. Go get them!</b></p>
+                </div>
+            </section>
+
+            <section id="gratitude" class="page">
+                <div class="hero-text">
+                    <span class="badge badge-love">From My Heart</span>
+                    <h1>Thank You</h1>
+                </div>
+
+                <div class="card">
+                    <p>My Dearest Husband,</p>
+                    <p>Thank you for choosing me to be your partner in this incredible journey. Thank you for the late nights, the early mornings, and the unwavering support you give me.</p>
+                    <p>I see your struggle, I see your growth, and I admire your strength. Thank you for dreaming big enough for both of us. </p>
+                    <p>Our SC Empire isn't just a business goal—it's a whole life of our journey where we will live together forever.Nanu yavagalu nin jothe ne erthini ninnalle erthini kandamma</p>
+                    <p style="text-align: right; font-weight: bold; color: var(--accent-love);">--With all my preciousss love, <br>Nin hendthi Kandamma🫂🫀</p>
+                </div>
+            </section>
+
+            <section id="challenge" class="page">
+                <div class="hero-text">
+                    <span class="badge badge-gold">Strategy Mode</span>
+                    <h1>Chess Mindset</h1>
+                </div>
+
+                <div class="card" style="text-align: center;">
+                    <span class="chess-icon">♟️</span>
+                    <h3>Level 50 Mastery</h3>
+                    <p style="margin-top: 15px;">Business is exactly like Chess. It’s not about the first move; it’s about Predicting the next five.</p>
+                </div>
+
+                <div class="card">
+                    <p><b>Patience:</b> Don't rush the opening. Setup your base (Sales Pipeline).</p>
+                    <p><b>Vision:</b> Sacrificing a small 'pawn' (time/comfort) to win the 'Queen' (Empire).</p>
+                    <p><b>Precision:</b> Every move must have a purpose. In sales, every call is a move.</p>
+                </div>
+
+                <div class="card" style="background: var(--bg-deep); border: 1px dashed var(--accent-gold);">
+                    <p style="text-align: center; margin-bottom: 0;"><b>"Checkmate the poverty. Build the King's life."</b></p>
+                </div>
+            </section>
+
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" onclick="showPage('home', this)">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('vision', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                <span>Vision</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('sales', this)">
+                <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                <span>Blueprint</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('gratitude', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <span>Gratitude</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('challenge', this)">
+                <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+                <span>Challenge</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        function showPage(pageId, element) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // Show target page
+            const targetPage = document.getElementById(pageId);
+            targetPage.classList.add('active');
+
+            // Update nav state
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            // Scroll content back to top
+            document.getElementById('main-content').scrollTop = 0;
+
+            // Trigger heart effect on Gratitude page
+            if (pageId === 'gratitude') {
+                createHearts();
+            }
+        }
+
+        function createHearts() {
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-heart';
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                    heart.style.bottom = '0';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 200);
+            }
+        }
+
+        // Initialize Home Hearts
+        window.onload = () => {
+            console.log("Welcome to SC Empire");
+        };
+    </script>
+</body>
+</html>
